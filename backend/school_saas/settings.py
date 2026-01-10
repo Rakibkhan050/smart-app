@@ -70,9 +70,17 @@ WSGI_APPLICATION = 'school_saas.wsgi.application'
 ASGI_APPLICATION = 'school_saas.asgi.application'
 
 # Database
-DATABASES = {
-    'default': dj_database_url.parse(os.getenv('DATABASE_URL'))
-}
+DATABASE_URL = os.getenv('DATABASE_URL')
+if DATABASE_URL:
+    DATABASES = {'default': dj_database_url.parse(DATABASE_URL)}
+else:
+    # fallback to sqlite for local dev/testing
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Channels
 CHANNEL_LAYERS = {
