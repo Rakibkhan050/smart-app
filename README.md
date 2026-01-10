@@ -24,10 +24,19 @@ This repository contains a scaffold for a Student Management SaaS MVP.
 - Set `NEXT_PUBLIC_API_BASE` in your `.env` to point the frontend to the backend API (default http://localhost:8000/api/).
 - For web-push, set `VAPID_PUBLIC_KEY` and `VAPID_PRIVATE_KEY` (server) and `NEXT_PUBLIC_VAPID_PUBLIC_KEY` for the frontend. Use the Notifications page to register service worker and send a demo subscription to the server.
 
-## Payments
+## Payments & Receipts
 - Payment provider secrets (PayTabs/Tap/HyperPay) go into `.env` (`PAYTABS_SECRET`, `TAP_SECRET`, `HYPERPAY_SECRET`).
 - The `/api/payments/create-intent/` endpoint returns a mock session for local testing. The `/api/payments/webhook/` endpoint validates signatures using HMAC-based checks and enqueues a Celery task to generate receipts when valid.
 - For local testing, use `/api/payments/test-webhook/` (authenticated) to simulate a payment webhook and trigger receipt generation without signing.
+- Receipt generation: a Celery task (`receipts.tasks.generate_receipt_for_payment`) renders a PDF (via `weasyprint`), generates a QR code, uploads artifacts to S3, saves the `Receipt` record, and may send an email with the download link.
+
+## Running workers (PowerShell)
+- Start services:
+  docker compose up --build
+- Run a Celery worker:
+  docker compose exec celery celery -A school_saas worker -l info
+- Run Celery beat (scheduled tasks):
+  docker compose exec celery-beat celery -A school_saas beat -l info
 
 ## Notes
 - Add your `SENDGRID_API_KEY`, `AWS_*` credentials and payment provider keys to `.env`.
@@ -35,6 +44,6 @@ This repository contains a scaffold for a Student Management SaaS MVP.
 
 ## Next steps
 - Implement multi-tenant middleware or schema strategy
-- Wire up payment provider integrations and webhooks
-- Add client-side Auth and JWT endpoints
+- Wire up real payment provider SDKs and webhook verification logic per provider docs
+- Add end-to-end frontend payment UI and webhook verification tests
 
