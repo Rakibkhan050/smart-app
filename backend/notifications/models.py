@@ -22,3 +22,16 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"Notification to {self.recipient} - {self.title}"
+
+
+class Subscription(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='push_subscriptions')
+    endpoint = models.URLField()
+    keys = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'endpoint')
+
+    def __str__(self):
+        return f"Subscription for {self.user} - {self.endpoint[:40]}"
