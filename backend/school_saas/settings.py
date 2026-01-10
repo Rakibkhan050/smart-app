@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'channels',
     'storages',
+    'django_celery_results',
 
     'users',
     'tenants',
@@ -32,6 +33,11 @@ INSTALLED_APPS = [
     'receipts',
 ]
 
+# Celery results backend
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', 'django-db')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
