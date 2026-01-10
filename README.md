@@ -26,7 +26,8 @@ This repository contains a scaffold for a Student Management SaaS MVP.
 
 ## Payments
 - Payment provider secrets (PayTabs/Tap/HyperPay) go into `.env` (`PAYTABS_SECRET`, `TAP_SECRET`, `HYPERPAY_SECRET`).
-- The `/api/payments/create-intent/` and `/api/payments/webhook/` endpoints are placeholders to be wired with real provider SDKs and webhook signature verification.
+- The `/api/payments/create-intent/` endpoint returns a mock session for local testing. The `/api/payments/webhook/` endpoint validates signatures using HMAC-based checks and enqueues a Celery task to generate receipts when valid.
+- For local testing, use `/api/payments/test-webhook/` (authenticated) to simulate a payment webhook and trigger receipt generation without signing.
 
 ## Notes
 - Add your `SENDGRID_API_KEY`, `AWS_*` credentials and payment provider keys to `.env`.
