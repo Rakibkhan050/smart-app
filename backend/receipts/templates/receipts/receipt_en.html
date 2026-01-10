@@ -1,0 +1,13 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Receipt {{ receipt.invoice_number }}</title>
+</head>
+<body>
+  <h1>Invoice {{ receipt.invoice_number }}</h1>
+  <p>Amount: {{ receipt.amount }} {{ receipt.currency }}</p>
+  <p>VAT: {{ receipt.vat_amount }}</p>
+  <img src="{{ receipt.qr_code_url }}" alt="QR Code"/>
+</body>
+</html>

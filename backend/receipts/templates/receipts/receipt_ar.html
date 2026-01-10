@@ -1,0 +1,13 @@
+<!doctype html>
+<html dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>فاتورة {{ receipt.invoice_number }}</title>
+</head>
+<body>
+  <h1>الفاتورة {{ receipt.invoice_number }}</h1>
+  <p>المبلغ: {{ receipt.amount }} {{ receipt.currency }}</p>
+  <p>الضريبة: {{ receipt.vat_amount }}</p>
+  <img src="{{ receipt.qr_code_url }}" alt="QR Code"/>
+</body>
+</html>
