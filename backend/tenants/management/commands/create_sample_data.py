@@ -18,7 +18,9 @@ class Command(BaseCommand):
     help = 'Create sample data for 3D dashboard demonstration'
 
     def handle(self, *args, **options):
-        self.stdout.write(self.style.SUCCESS('🚀 Creating sample data...'))
+        self.stdout.write(self.style.ERROR('❌ Sample data generation is disabled in production.'))
+        self.stdout.write('Use Django Admin or API endpoints to create real data.')
+        return
         
         # Create tenant
         tenant, created = Tenant.objects.get_or_create(

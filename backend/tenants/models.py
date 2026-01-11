@@ -192,3 +192,76 @@ class TenantBankAccount(models.Model):
     
     def __str__(self):
         return f"{self.tenant.name} - {self.account_holder_name}"
+
+
+class StorefrontConfig(models.Model):
+    """Per-tenant storefront/PWA configuration for independent branding"""
+    tenant = models.OneToOneField(Tenant, on_delete=models.CASCADE, related_name='storefront')
+    app_name = models.CharField(max_length=60, help_text='PWA app name')
+    short_name = models.CharField(max_length=30, help_text='Short name for install prompt')
+    theme_color = models.CharField(max_length=7, default='#0ea5e9')
+    background_color = models.CharField(max_length=7, default='#0b1220')
+    display = models.CharField(max_length=20, default='standalone')
+    start_url = models.CharField(max_length=255, default='/')
+    scope = models.CharField(max_length=255, default='/')
+    icon_url = models.URLField(blank=True)
+    site_domain = models.CharField(max_length=255, blank=True, help_text='Optional custom domain or subdomain')
+    offline_enabled = models.BooleanField(default=True)
+    seo_title = models.CharField(max_length=120, blank=True)
+    seo_description = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = 'Storefront Configuration'
+        verbose_name_plural = 'Storefront Configurations'
+    
+    def __str__(self):
+        return f"Storefront for {self.tenant.name}"
+    
+    def manifest(self):
+        """Return a dict suitable for manifest.json generation"""
+        return {
+            'name': self.app_name,
+            'short_name': self.short_name,
+            'theme_color': self.theme_color,
+            'background_color': self.background_color,
+            'display': self.display,
+            'start_url': self.start_url,
+            'scope': self.scope,
+            'icons': [{'src': self.icon_url, 'sizes': '192x192', 'type': 'image/png'}] if self.icon_url else []
+        }
+
+
+# Ensure storefront config exists on tenant creation
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+@receiver(post_save, sender=Tenant)
+def create_storefront_config(sender, instance, created, **kwargs):
+    if created:
+        StorefrontConfig.objects.create(
+            tenant=instance,
+            app_name=instance.name,
+            short_name=instance.name[:30],
+            theme_color=instance.color_primary or '#0ea5e9',
+            background_color=instance.color_secondary or '#0b1220',
+            icon_url=instance.logo,
+        )
+    else:
+        # keep storefront branding in sync when tenant updates
+        sf = getattr(instance, 'storefront', None)
+        if sf:
+            changed = False
+            if instance.logo and sf.icon_url != instance.logo:
+                sf.icon_url = instance.logo; changed = True
+            if sf.app_name != instance.name:
+                sf.app_name = instance.name; changed = True
+            if sf.short_name != instance.name[:30]:
+                sf.short_name = instance.name[:30]; changed = True
+            if sf.theme_color != (instance.color_primary or sf.theme_color):
+                sf.theme_color = instance.color_primary or sf.theme_color; changed = True
+            if sf.background_color != (instance.color_secondary or sf.background_color):
+                sf.background_color = instance.color_secondary or sf.background_color; changed = True
+            if changed:
+                sf.save()

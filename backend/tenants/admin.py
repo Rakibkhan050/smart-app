@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.db.models import Q
 from .models import (
-    Tenant, TenantOperatingHours, TenantBankAccount
+    Tenant, TenantOperatingHours, TenantBankAccount, StorefrontConfig
 )
 
 
@@ -18,6 +18,16 @@ class TenantBankAccountInline(admin.StackedInline):
     model = TenantBankAccount
     extra = 0
     fields = ('account_holder_name', 'account_type', 'bank_name', 'iban', 'is_verified')
+
+class StorefrontConfigInline(admin.StackedInline):
+    """Inline editing of storefront/PWA settings"""
+    model = StorefrontConfig
+    extra = 0
+    fields = (
+        'app_name', 'short_name', 'theme_color', 'background_color', 'display',
+        'start_url', 'scope', 'icon_url', 'site_domain', 'offline_enabled',
+        'seo_title', 'seo_description'
+    )
 
 
 @admin.register(Tenant)
@@ -93,7 +103,7 @@ class TenantAdmin(admin.ModelAdmin):
         })
     )
     
-    inlines = [TenantOperatingHoursInline, TenantBankAccountInline]
+    inlines = [StorefrontConfigInline, TenantOperatingHoursInline, TenantBankAccountInline]
     
     actions = ['approve_business', 'reject_business', 'activate_business', 'deactivate_business']
     

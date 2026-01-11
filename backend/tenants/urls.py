@@ -6,8 +6,10 @@ urlpatterns = [
     path('storefront/businesses/', storefront_api.storefront_businesses, name='storefront-businesses'),
     path('storefront/businesses/<slug:business_slug>/', storefront_api.storefront_business_detail, name='storefront-business-detail'),
     path('storefront/categories/', storefront_api.storefront_categories, name='storefront-categories'),
+    path('storefront/businesses/<slug:business_slug>/manifest.json', storefront_api.storefront_manifest, name='storefront-manifest'),
     
     # Master Admin API
     path('master-admin/dashboard/', master_admin_api.master_dashboard, name='master-admin-dashboard'),
+    path('master-admin/search/', master_admin_api.global_search, name='master-admin-global-search'),
     path('master-admin/businesses/<int:business_id>/commission/', master_admin_api.update_commission_rate, name='update-commission'),
 ]

@@ -1,15 +1,15 @@
-"""
-Management command to create sample businesses for Multi-Business SaaS platform
-"""
-from django.core.management.base import BaseCommand
-from tenants.models import Tenant
+# This file has been disabled - production app uses real data only.
+# To create businesses, use Django admin or REST API endpoints.
 
+from django.core.management.base import BaseCommand
 
 class Command(BaseCommand):
-    help = 'Create sample businesses for multi-business storefront'
+    help = 'DISABLED: Sample business generation removed for production'
 
     def handle(self, *args, **kwargs):
-        businesses = [
+        self.stdout.write(self.style.ERROR('❌ Sample business generation is disabled in production.'))
+        self.stdout.write('Use Django Admin or API endpoints to create real businesses.')
+        return
             {
                 'name': 'Fresh Mart Grocery',
                 'slug': 'fresh-mart-grocery',

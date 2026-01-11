@@ -19,7 +19,7 @@ from notifications.models import Notification
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny])  # Allow access without authentication for demo
+@permission_classes([IsAuthenticated])
 def dashboard_3d_metrics(request):
     """
     Return comprehensive metrics for 3D dashboard visualization.
@@ -52,14 +52,10 @@ def dashboard_3d_metrics(request):
         }
     }
     """
-    # Get tenant from authenticated user or use first tenant for demo
+    # Get tenant from authenticated user
     tenant = None
-    if request.user.is_authenticated and hasattr(request.user, 'tenant'):
+    if hasattr(request.user, 'tenant'):
         tenant = request.user.tenant
-    else:
-        # For demo/unauthenticated access, use first tenant
-        from tenants.models import Tenant
-        tenant = Tenant.objects.first()
         
     if not tenant:
         return Response({

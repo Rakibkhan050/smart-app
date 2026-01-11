@@ -158,3 +158,23 @@ def storefront_categories(request):
             is_approved=True
         ).count()
     })
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def storefront_manifest(request, business_slug):
+    """
+    Return manifest.json for a specific business storefront based on StorefrontConfig.
+    """
+    try:
+        business = Tenant.objects.get(
+            slug=business_slug,
+            is_active=True,
+            is_approved=True
+        )
+    except Tenant.DoesNotExist:
+        return Response({'error': 'Business not found'}, status=404)
+    sf = getattr(business, 'storefront', None)
+    if not sf:
+        return Response({'error': 'Storefront not configured'}, status=404)
+    return Response(sf.manifest())

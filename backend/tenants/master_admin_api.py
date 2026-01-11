@@ -15,6 +15,8 @@ from pos.models import Order
 from payments.models import Payment
 from drivers.models import Driver, DriverAssignment
 from crm.models import Customer
+from users.models import User
+from drivers.models import DriverProfile
 
 
 @api_view(['GET'])
@@ -187,3 +189,66 @@ def update_commission_rate(request, business_id):
         'business': business.name,
         'new_commission_rate': float(new_rate)
     })
+
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def global_search(request):
+    """
+    Master Admin - Global search across Customers and Drivers by
+    registration_id or mobile/email.
+    Query params:
+      - q: the search text
+      - type: 'customer' | 'driver' | 'business' (optional)
+    """
+    q = (request.GET.get('q') or '').strip()
+    t = (request.GET.get('type') or '').strip()
+    if not q:
+        return Response({'error': 'q is required'}, status=400)
+    
+    results = {
+        'customers': [],
+        'drivers': [],
+        'businesses': []
+    }
+    
+    # Customers across all tenants
+    if not t or t == 'customer':
+        for cust in Customer.objects.filter(
+            Q(phone__icontains=q) | Q(email__icontains=q) | Q(first_name__icontains=q) | Q(last_name__icontains=q)
+        )[:50]:
+            results['customers'].append({
+                'id': cust.id,
+                'name': f"{cust.first_name} {cust.last_name}".strip(),
+                'phone': cust.phone,
+                'email': cust.email,
+                'tenant': cust.tenant.name if cust.tenant else None,
+            })
+    
+    # Drivers across all tenants
+    if not t or t == 'driver':
+        for drv in DriverProfile.objects.filter(
+            Q(mobile_number__icontains=q) | Q(registration_id__icontains=q) | Q(full_name__icontains=q)
+        )[:50]:
+            results['drivers'].append({
+                'id': drv.id,
+                'name': drv.full_name,
+                'mobile_number': drv.mobile_number,
+                'registration_id': drv.registration_id,
+                'status': drv.verification_status,
+            })
+    
+    # Businesses by registration_id or name
+    if not t or t == 'business':
+        for biz in Tenant.objects.filter(
+            Q(registration_id__icontains=q) | Q(name__icontains=q)
+        )[:50]:
+            results['businesses'].append({
+                'id': str(biz.id),
+                'name': biz.name,
+                'registration_id': biz.registration_id,
+                'category': biz.get_category_display(),
+                'owner_email': biz.owner_email,
+            })
+    
+    return Response({'query': q, 'results': results})

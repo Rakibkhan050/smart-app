@@ -35,15 +35,5 @@ class NotificationViewSet(viewsets.ModelViewSet):
         )
         return response.Response({'status': 'subscribed', 'created': created})
 
-    @decorators.action(detail=False, methods=['post'])
-    def send_demo(self, request):
-        # send a demo push to all of the user's subscriptions
-        from .models import Subscription
-        subs = Subscription.objects.filter(user=request.user)
-        payload = request.data.get('payload', 'Demo notification')
-        from .utils import send_web_push
-        results = []
-        for s in subs:
-            ok = send_web_push({'endpoint': s.endpoint, 'keys': s.keys}, payload)
-            results.append({'endpoint': s.endpoint, 'ok': ok})
-        return response.Response({'results': results})
+    # Demo endpoint removed - production app uses real notifications only
+    # Push notifications are triggered by actual events (orders, deliveries, incidents, etc.)
