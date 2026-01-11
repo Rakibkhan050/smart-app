@@ -280,3 +280,8 @@ const HomePage: React.FC = () => {
 };
 
 export default HomePage;
+
+// Disable static optimization to avoid prerender errors on Vercel
+export async function getServerSideProps() {
+  return { props: {} }
+}

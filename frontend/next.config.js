@@ -71,11 +71,6 @@ module.exports = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
 
-  // Experimental features for better mobile performance
-  experimental: {
-    optimizeCss: true,
-  },
-
   // Environment variables
   env: {
     API_URL: process.env.API_URL || 'http://localhost:8000',
