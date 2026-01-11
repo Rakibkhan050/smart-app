@@ -529,7 +529,7 @@ const Dashboard3D: React.FC<Dashboard3DProps> = ({
         {/* Quick Actions */}
         <div className="mt-4 pt-4 border-t border-gray-700 space-y-2">
           <a 
-            href="http://localhost:8000/admin" 
+            href={(process.env.NEXT_PUBLIC_API_URL || '').replace(/\/api\/?$/, '') || 'https://smart-app-production.up.railway.app/admin'} 
             target="_blank"
             rel="noopener noreferrer"
             className="block w-full px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-center text-sm transition-colors duration-200"

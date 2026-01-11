@@ -17,9 +17,10 @@ const Navigation: React.FC<NavigationProps> = ({ transparent = false }) => {
     { href: '/receipts', label: 'Receipts', icon: '🧾' },
   ];
 
+  const backendRoot = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/api\/?$/, '') || 'https://smart-app-production.up.railway.app';
   const externalLinks = [
-    { href: 'http://localhost:8000/admin', label: 'Admin Panel', icon: '⚙️' },
-    { href: 'http://localhost:8000/api', label: 'API Docs', icon: '📚' },
+    { href: `${backendRoot}/admin`, label: 'Admin Panel', icon: '⚙️' },
+    { href: process.env.NEXT_PUBLIC_API_URL || `${backendRoot}/api`, label: 'API Docs', icon: '📚' },
   ];
 
   const isActive = (href: string) => router.pathname === href;

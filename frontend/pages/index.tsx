@@ -3,6 +3,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 
 const HomePage: React.FC = () => {
+  const backendRoot = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/api\/?$/, '') || 'https://smart-app-production.up.railway.app';
   const features = [
     {
       title: '3D Dashboard',
@@ -24,7 +25,7 @@ const HomePage: React.FC = () => {
       title: 'Inventory Manager',
       description: 'Track products, stock levels, and automatic low-stock alerts',
       icon: '📦',
-      href: 'http://localhost:8000/admin/inventory/product/',
+      href: `${backendRoot}/admin/inventory/product/`,
       color: 'from-purple-600 to-purple-700',
       external: true,
       stats: 'Auto alerts'
@@ -33,7 +34,7 @@ const HomePage: React.FC = () => {
       title: 'Customer CRM',
       description: 'Manage customers, loyalty points, and purchase history',
       icon: '👥',
-      href: 'http://localhost:8000/admin/crm/customer/',
+      href: `${backendRoot}/admin/crm/customer/`,
       color: 'from-pink-600 to-pink-700',
       external: true,
       stats: 'Loyalty system'
@@ -42,7 +43,7 @@ const HomePage: React.FC = () => {
       title: 'Delivery Tracker',
       description: 'GPS tracking, delivery personnel, and status management',
       icon: '🚚',
-      href: 'http://localhost:8000/admin/delivery/delivery/',
+      href: `${backendRoot}/admin/delivery/delivery/`,
       color: 'from-yellow-600 to-yellow-700',
       external: true,
       stats: 'GPS enabled'
@@ -51,7 +52,7 @@ const HomePage: React.FC = () => {
       title: 'Payment Gateway',
       description: 'Visa, Mastercard, Amex, Apple Pay, Google Pay, bKash, Nagad',
       icon: '💳',
-      href: 'http://localhost:8000/admin/payments/payment/',
+      href: `${backendRoot}/admin/payments/payment/`,
       color: 'from-indigo-600 to-indigo-700',
       external: true,
       stats: 'Multi-payment'
@@ -60,7 +61,7 @@ const HomePage: React.FC = () => {
       title: 'Finance Reports',
       description: 'P&L analysis, VAT calculation, expense tracking',
       icon: '💰',
-      href: 'http://localhost:8000/admin/finance/expense/',
+      href: `${backendRoot}/admin/finance/expense/`,
       color: 'from-red-600 to-red-700',
       external: true,
       stats: 'Tax ready'
@@ -122,7 +123,7 @@ const HomePage: React.FC = () => {
               </div>
               <div className="flex items-center space-x-3">
                 <a
-                  href="http://localhost:8000/admin"
+                  href={`${backendRoot}/admin`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200 flex items-center space-x-2"
@@ -241,7 +242,7 @@ const HomePage: React.FC = () => {
               <span>→</span>
             </Link>
             <a
-              href="http://localhost:8000/admin"
+              href={`${backendRoot}/admin`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center space-x-3 px-8 py-4 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white text-xl font-bold rounded-xl shadow-2xl transition-all duration-300 hover:scale-110"
