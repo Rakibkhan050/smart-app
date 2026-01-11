@@ -415,17 +415,57 @@ const Dashboard3D: React.FC<Dashboard3DProps> = ({
   }
 
   if (error) {
+    const backendRoot = (apiBaseUrl || '').replace(/\/api\/?$/, '') || 'https://smart-app-production.up.railway.app';
+    const isNoTenantError = error.includes('business') || error.includes('tenant');
+    
     return (
-      <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-br from-gray-900 via-red-900 to-gray-900">
-        <div className="text-6xl mb-4">⚠️</div>
-        <div className="text-red-400 text-xl font-semibold mb-2">Error Loading Dashboard</div>
-        <div className="text-red-300 text-sm max-w-md text-center">{error}</div>
-        <button 
-          onClick={() => window.location.reload()} 
-          className="mt-6 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors duration-200"
-        >
-          Retry
-        </button>
+      <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-br from-gray-900 via-red-900 to-gray-900 px-4">
+        <div className="max-w-2xl w-full bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-red-500/30">
+          <div className="text-6xl mb-4 text-center">⚠️</div>
+          <div className="text-red-400 text-2xl font-semibold mb-3 text-center">Error Loading Dashboard</div>
+          <div className="text-red-300 text-base mb-6 text-center">{error}</div>
+          
+          {isNoTenantError && (
+            <div className="bg-yellow-900/30 border border-yellow-600/50 rounded-lg p-4 mb-6">
+              <div className="flex items-start space-x-3">
+                <span className="text-2xl">💡</span>
+                <div>
+                  <div className="text-yellow-400 font-semibold mb-2">Quick Fix:</div>
+                  <ol className="text-yellow-200 text-sm space-y-2 list-decimal list-inside">
+                    <li>Go to the Admin Panel</li>
+                    <li>Create your first Business/Tenant</li>
+                    <li>Come back and refresh this page</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button 
+              onClick={() => window.location.reload()} 
+              className="flex-1 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors duration-200 font-medium"
+            >
+              🔄 Retry
+            </button>
+            {isNoTenantError && (
+              <a
+                href={`${backendRoot}/admin`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 text-center font-medium"
+              >
+                ⚙️ Open Admin
+              </a>
+            )}
+            <a
+              href="/"
+              className="flex-1 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200 text-center font-medium"
+            >
+              🏠 Go Home
+            </a>
+          </div>
+        </div>
       </div>
     );
   }

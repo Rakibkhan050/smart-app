@@ -56,10 +56,20 @@ def dashboard_3d_metrics(request):
     tenant = None
     if hasattr(request.user, 'tenant'):
         tenant = request.user.tenant
+    
+    # If no tenant, try to get first tenant (for superadmin or initial setup)
+    if not tenant:
+        from tenants.models import Tenant
+        tenant = Tenant.objects.first()
+    # If no tenant, try to get first tenant (for superadmin or initial setup)
+    if not tenant:
+        from tenants.models import Tenant
+        tenant = Tenant.objects.first()
         
     if not tenant:
         return Response({
-            "error": "No tenant found. Please create a tenant first.",
+            "error": "No business/tenant found. Please create a business first via Django Admin.",
+            "hint": "Visit /admin to create your first business/tenant",
             "date_range": {"start": "", "end": "", "days": 0},
             "financial": {
                 "revenue_trend": [],
