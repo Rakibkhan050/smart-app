@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline - Smart SaaS</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
+    
+    .offline-container {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 500px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    
+    .offline-icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+    }
+    
+    h1 {
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 28px;
+    }
+    
+    p {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 25px;
+      font-size: 16px;
+    }
+    
+    .retry-button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-top: 10px;
+    }
+    
+    .retry-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+    
+    .retry-button:active {
+      transform: translateY(0);
+    }
+    
+    .features {
+      margin-top: 30px;
+      padding-top: 30px;
+      border-top: 1px solid #eee;
+      text-align: left;
+    }
+    
+    .features h3 {
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+    
+    .feature-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      color: #666;
+    }
+    
+    .feature-item::before {
+      content: '✓';
+      color: #10b981;
+      font-weight: bold;
+      margin-right: 10px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="offline-container">
+    <div class="offline-icon">📡</div>
+    <h1>You're Offline</h1>
+    <p>It looks like you've lost your internet connection. Some features may not be available until you're back online.</p>
+    
+    <button class="retry-button" onclick="location.reload()">
+      Try Again
+    </button>
+    
+    <div class="features">
+      <h3>What You Can Still Do:</h3>
+      <div class="feature-item">View previously loaded data</div>
+      <div class="feature-item">Draft orders (will sync when online)</div>
+      <div class="feature-item">View cached reports</div>
+      <div class="feature-item">Access saved settings</div>
+    </div>
+  </div>
+  
+  <script>
+    // Auto-retry connection every 5 seconds
+    let retryInterval = setInterval(() => {
+      if (navigator.onLine) {
+        clearInterval(retryInterval);
+        location.reload();
+      }
+    }, 5000);
+    
+    // Show online status
+    window.addEventListener('online', () => {
+      location.reload();
+    });
+  </script>
+</body>
+</html>

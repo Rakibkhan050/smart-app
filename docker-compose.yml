@@ -1,7 +1,9 @@
 version: '3.8'
 services:
-  web:
-    build: ./backend/docker
+  backend:
+    build:
+      context: ./backend
+      dockerfile: docker/Dockerfile
     command: bash -lc "python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./backend:/app
@@ -31,8 +33,10 @@ services:
       - "6379:6379"
 
   celery:
-    build: ./backend/docker
-    command: bash -lc "celery -A school_saas worker -l info"
+    build:
+      context: ./backend
+      dockerfile: docker/Dockerfile
+    command: bash -lc "celery -A backend worker -l info"
     depends_on:
       - redis
       - db
@@ -40,8 +44,10 @@ services:
       - ./backend:/app
 
   celery-beat:
-    build: ./backend/docker
-    command: bash -lc "celery -A school_saas beat -l info"
+    build:
+      context: ./backend
+      dockerfile: docker/Dockerfile
+    command: bash -lc "celery -A backend beat -l info"
     depends_on:
       - redis
     volumes:
@@ -52,6 +58,22 @@ services:
     # placeholder config, add real nginx config later
     ports:
       - "80:80"
+
+  # Stripe mock server for integration testing (replaces live Stripe API)
+  stripe-mock:
+    image: stripe/stripe-mock:latest
+    ports:
+      - "12111:12111"
+    environment:
+      - PORT=12111
+
+  # Moto server for S3 emulation (replaces live AWS S3)
+  moto:
+    image: motoapi/moto:latest
+    ports:
+      - "5000:5000"
+    environment:
+      - MOTO_PORT=5000
 
 volumes:
   pgdata:

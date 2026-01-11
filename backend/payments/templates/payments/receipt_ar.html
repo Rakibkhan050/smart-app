@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>إيصال {{ receipt.invoice_no }}</title>
+  <style>
+    body { font-family: Tahoma, Arial, sans-serif; margin: 30px; }
+    .header { text-align: center; }
+    .details { margin-top: 20px; }
+    .totals { margin-top: 20px; font-weight: bold; }
+    table { width: 100%; border-collapse: collapse; }
+    td, th { padding: 8px; border: 1px solid #ddd; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>{% if receipt.tenant and receipt.tenant.name %}{{ receipt.tenant.name }}{% else %}الشركة{% endif %}</h1>
+    <p>رقم الفاتورة: {{ receipt.invoice_no }}</p>
+    <p>التاريخ: {{ receipt.created_at }}</p>
+  </div>
+
+  <div class="details">
+    <table>
+      <tr>
+        <th>الوصف</th>
+        <th>المبلغ</th>
+      </tr>
+      <tr>
+        <td>دفع {{ receipt.payment_id }}</td>
+        <td>{{ receipt.amount }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="totals">
+    <p>الضريبة: {{ receipt.vat_amount }}</p>
+    <p>الإجمالي: {{ receipt.amount|floatformat:2 }}</p>
+  </div>
+
+  <footer style="margin-top:30px; font-size:0.9em; color:#666;">
+    <p>إيصال إلكتروني تم إنشاؤه بواسطة School SaaS</p>
+  </footer>
+</body>
+</html>
