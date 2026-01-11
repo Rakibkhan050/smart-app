@@ -20,3 +20,8 @@ export default function Payments(){
     </div>
   )
 }
+
+// Disable static optimization to avoid prerender errors on Vercel
+export async function getServerSideProps() {
+  return { props: {} }
+}
