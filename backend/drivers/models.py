@@ -357,3 +357,27 @@ class DriverEarnings(models.Model):
     def __str__(self):
         return f"{self.driver.get_full_name()} - {self.amount} ({self.payout_status})"
 
+
+class LocationHistory(models.Model):
+    """Store driver location trail for tracking and analytics"""
+    driver = models.ForeignKey(DriverProfile, on_delete=models.CASCADE, related_name='location_history')
+    assignment = models.ForeignKey(DriverAssignment, on_delete=models.CASCADE, null=True, blank=True, related_name='location_trail')
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    accuracy = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True, help_text='GPS accuracy in meters')
+    speed = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True, help_text='Speed in km/h')
+    heading = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, help_text='Direction in degrees (0-360)')
+    timestamp = models.DateTimeField(auto_now_add=True, db_index=True)
+    
+    class Meta:
+        verbose_name = 'Location History'
+        verbose_name_plural = 'Location Histories'
+        ordering = ['-timestamp']
+        indexes = [
+            models.Index(fields=['driver', 'timestamp']),
+            models.Index(fields=['assignment', 'timestamp']),
+        ]
+    
+    def __str__(self):
+        return f"{self.driver.get_full_name()} @ {self.timestamp.strftime('%Y-%m-%d %H:%M:%S')}"
+

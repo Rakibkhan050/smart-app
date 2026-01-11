@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.db.models import Q
 from .models import (
-    DriverProfile, DriverDocument, DriverAssignment, DriverEarnings
+    DriverProfile, DriverDocument, DriverAssignment, DriverEarnings, LocationHistory
 )
 
 
@@ -487,3 +487,30 @@ class DriverEarningsAdmin(admin.ModelAdmin):
             obj.get_payout_status_display()
         )
     payout_status_badge.short_description = 'Payout Status'
+
+
+@admin.register(LocationHistory)
+class LocationHistoryAdmin(admin.ModelAdmin):
+    """Admin for driver location tracking history"""
+    list_display = [
+        'driver', 'timestamp', 'location_display', 'speed', 
+        'assignment', 'accuracy'
+    ]
+    list_filter = ['timestamp', 'driver']
+    search_fields = ['driver__first_name', 'driver__last_name', 'driver__phone']
+    readonly_fields = ['timestamp']
+    date_hierarchy = 'timestamp'
+    
+    fieldsets = [
+        ('Location', {
+            'fields': ('driver', 'assignment', 'latitude', 'longitude')
+        }),
+        ('Details', {
+            'fields': ('accuracy', 'speed', 'heading', 'timestamp')
+        }),
+    ]
+    
+    def location_display(self, obj):
+        """Display location coordinates"""
+        return f"{obj.latitude}, {obj.longitude}"
+    location_display.short_description = 'Coordinates'

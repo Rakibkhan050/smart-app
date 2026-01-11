@@ -24,6 +24,7 @@ urlpatterns = [
     # Customer & Delivery
     path('api/crm/', include('crm.urls')),
     path('api/delivery/', include('delivery.urls')),
+    path('api/drivers/', include('drivers.urls')),  # Driver location tracking
     
     # Analytics & Finance
     path('api/finance/', include('finance.urls')),
